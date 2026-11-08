@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as StudentRouteImport } from './routes/_student'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as LoginRouteImport } from './routes/login'
@@ -17,10 +18,18 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as StudentCartRouteImport } from './routes/_student/cart'
 import { Route as StudentCheckoutRouteImport } from './routes/_student/checkout'
 import { Route as StudentMenuRouteImport } from './routes/_student/menu'
+import { Route as StudentProfileRouteImport } from './routes/_student/profile'
+import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin.index'
+import { Route as StudentOrdersIndexRouteImport } from './routes/_student/orders.index'
+import { Route as StudentOrdersOrderIdRouteImport } from './routes/_student/orders.$orderId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudentRoute = StudentRouteImport.update({
@@ -57,6 +66,26 @@ const StudentMenuRoute = StudentMenuRouteImport.update({
   path: '/menu',
   getParentRoute: () => StudentRoute,
 } as any)
+const StudentProfileRoute = StudentProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => StudentRoute,
+} as any)
+const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const StudentOrdersIndexRoute = StudentOrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentOrdersOrderIdRoute = StudentOrdersOrderIdRouteImport.update({
+  id: '/orders/$orderId',
+  path: '/orders/$orderId',
+  getParentRoute: () => StudentRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +95,10 @@ export interface FileRoutesByFullPath {
   '/cart': typeof StudentCartRoute
   '/checkout': typeof StudentCheckoutRoute
   '/menu': typeof StudentMenuRoute
+  '/profile': typeof StudentProfileRoute
+  '/orders/$orderId': typeof StudentOrdersOrderIdRoute
+  '/admin/': typeof AdminAdminIndexRoute
+  '/orders/': typeof StudentOrdersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,10 +108,15 @@ export interface FileRoutesByTo {
   '/cart': typeof StudentCartRoute
   '/checkout': typeof StudentCheckoutRoute
   '/menu': typeof StudentMenuRoute
+  '/profile': typeof StudentProfileRoute
+  '/orders/$orderId': typeof StudentOrdersOrderIdRoute
+  '/admin': typeof AdminAdminIndexRoute
+  '/orders': typeof StudentOrdersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_admin': typeof AdminRouteWithChildren
   '/_student': typeof StudentRouteWithChildren
   '/admin-login': typeof AdminLoginRoute
   '/login': typeof LoginRoute
@@ -86,6 +124,10 @@ export interface FileRoutesById {
   '/_student/cart': typeof StudentCartRoute
   '/_student/checkout': typeof StudentCheckoutRoute
   '/_student/menu': typeof StudentMenuRoute
+  '/_student/profile': typeof StudentProfileRoute
+  '/_student/orders/$orderId': typeof StudentOrdersOrderIdRoute
+  '/_admin/admin/': typeof AdminAdminIndexRoute
+  '/_student/orders/': typeof StudentOrdersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +139,10 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/menu'
+    | '/profile'
+    | '/orders/$orderId'
+    | '/admin/'
+    | '/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -106,9 +152,14 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/menu'
+    | '/profile'
+    | '/orders/$orderId'
+    | '/admin'
+    | '/orders'
   id:
     | '__root__'
     | '/'
+    | '/_admin'
     | '/_student'
     | '/admin-login'
     | '/login'
@@ -116,10 +167,15 @@ export interface FileRouteTypes {
     | '/_student/cart'
     | '/_student/checkout'
     | '/_student/menu'
+    | '/_student/profile'
+    | '/_student/orders/$orderId'
+    | '/_admin/admin/'
+    | '/_student/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   StudentRoute: typeof StudentRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   LoginRoute: typeof LoginRoute
@@ -133,6 +189,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_student': {
@@ -184,19 +247,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentMenuRouteImport
       parentRoute: typeof StudentRoute
     }
+    '/_student/profile': {
+      id: '/_student/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof StudentProfileRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/_admin/admin/': {
+      id: '/_admin/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminAdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_student/orders/': {
+      id: '/_student/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof StudentOrdersIndexRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/_student/orders/$orderId': {
+      id: '/_student/orders/$orderId'
+      path: '/orders/$orderId'
+      fullPath: '/orders/$orderId'
+      preLoaderRoute: typeof StudentOrdersOrderIdRouteImport
+      parentRoute: typeof StudentRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminAdminIndexRoute: typeof AdminAdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdminIndexRoute: AdminAdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface StudentRouteChildren {
   StudentCartRoute: typeof StudentCartRoute
   StudentCheckoutRoute: typeof StudentCheckoutRoute
   StudentMenuRoute: typeof StudentMenuRoute
+  StudentProfileRoute: typeof StudentProfileRoute
+  StudentOrdersOrderIdRoute: typeof StudentOrdersOrderIdRoute
+  StudentOrdersIndexRoute: typeof StudentOrdersIndexRoute
 }
 
 const StudentRouteChildren: StudentRouteChildren = {
   StudentCartRoute: StudentCartRoute,
   StudentCheckoutRoute: StudentCheckoutRoute,
   StudentMenuRoute: StudentMenuRoute,
+  StudentProfileRoute: StudentProfileRoute,
+  StudentOrdersOrderIdRoute: StudentOrdersOrderIdRoute,
+  StudentOrdersIndexRoute: StudentOrdersIndexRoute,
 }
 
 const StudentRouteWithChildren =
@@ -204,6 +311,7 @@ const StudentRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   StudentRoute: StudentRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   LoginRoute: LoginRoute,

@@ -11,7 +11,7 @@ import { signInWithPin, useAuth } from "@/lib/auth";
 import { validateName, validatePin } from "@/lib/rules";
 
 export const Route = createFileRoute("/login")({
-  validateSearch: (s: Record<string, unknown>): { redirect?: string } => ({
+  validateSearch: (s: Record<string, unknown>): { redirect?: string | undefined } => ({
     redirect: typeof s["redirect"] === "string" ? (s["redirect"] as string) : undefined,
   }),
   head: () => ({
