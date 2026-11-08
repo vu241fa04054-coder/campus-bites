@@ -15,6 +15,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as StudentCartRouteImport } from './routes/_student/cart'
+import { Route as StudentCheckoutRouteImport } from './routes/_student/checkout'
 import { Route as StudentMenuRouteImport } from './routes/_student/menu'
 
 const IndexRoute = IndexRouteImport.update({
@@ -46,6 +47,11 @@ const StudentCartRoute = StudentCartRouteImport.update({
   path: '/cart',
   getParentRoute: () => StudentRoute,
 } as any)
+const StudentCheckoutRoute = StudentCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => StudentRoute,
+} as any)
 const StudentMenuRoute = StudentMenuRouteImport.update({
   id: '/menu',
   path: '/menu',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/cart': typeof StudentCartRoute
+  '/checkout': typeof StudentCheckoutRoute
   '/menu': typeof StudentMenuRoute
 }
 export interface FileRoutesByTo {
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/cart': typeof StudentCartRoute
+  '/checkout': typeof StudentCheckoutRoute
   '/menu': typeof StudentMenuRoute
 }
 export interface FileRoutesById {
@@ -76,13 +84,28 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_student/cart': typeof StudentCartRoute
+  '/_student/checkout': typeof StudentCheckoutRoute
   '/_student/menu': typeof StudentMenuRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin-login' | '/login' | '/register' | '/cart' | '/menu'
+  fullPaths:
+    | '/'
+    | '/admin-login'
+    | '/login'
+    | '/register'
+    | '/cart'
+    | '/checkout'
+    | '/menu'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin-login' | '/login' | '/register' | '/cart' | '/menu'
+  to:
+    | '/'
+    | '/admin-login'
+    | '/login'
+    | '/register'
+    | '/cart'
+    | '/checkout'
+    | '/menu'
   id:
     | '__root__'
     | '/'
@@ -91,6 +114,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/_student/cart'
+    | '/_student/checkout'
     | '/_student/menu'
   fileRoutesById: FileRoutesById
 }
@@ -146,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentCartRouteImport
       parentRoute: typeof StudentRoute
     }
+    '/_student/checkout': {
+      id: '/_student/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof StudentCheckoutRouteImport
+      parentRoute: typeof StudentRoute
+    }
     '/_student/menu': {
       id: '/_student/menu'
       path: '/menu'
@@ -158,11 +189,13 @@ declare module '@tanstack/react-router' {
 
 interface StudentRouteChildren {
   StudentCartRoute: typeof StudentCartRoute
+  StudentCheckoutRoute: typeof StudentCheckoutRoute
   StudentMenuRoute: typeof StudentMenuRoute
 }
 
 const StudentRouteChildren: StudentRouteChildren = {
   StudentCartRoute: StudentCartRoute,
+  StudentCheckoutRoute: StudentCheckoutRoute,
   StudentMenuRoute: StudentMenuRoute,
 }
 
