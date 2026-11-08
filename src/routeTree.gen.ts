@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudentRouteImport } from './routes/_student'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as StudentCartRouteImport } from './routes/_student/cart'
+import { Route as StudentMenuRouteImport } from './routes/_student/menu'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentRoute = StudentRouteImport.update({
+  id: '/_student',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -34,36 +41,62 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentCartRoute = StudentCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentMenuRoute = StudentMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => StudentRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin-login': typeof AdminLoginRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/cart': typeof StudentCartRoute
+  '/menu': typeof StudentMenuRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin-login': typeof AdminLoginRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/cart': typeof StudentCartRoute
+  '/menu': typeof StudentMenuRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_student': typeof StudentRouteWithChildren
   '/admin-login': typeof AdminLoginRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/_student/cart': typeof StudentCartRoute
+  '/_student/menu': typeof StudentMenuRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin-login' | '/login' | '/register'
+  fullPaths: '/' | '/admin-login' | '/login' | '/register' | '/cart' | '/menu'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin-login' | '/login' | '/register'
-  id: '__root__' | '/' | '/admin-login' | '/login' | '/register'
+  to: '/' | '/admin-login' | '/login' | '/register' | '/cart' | '/menu'
+  id:
+    | '__root__'
+    | '/'
+    | '/_student'
+    | '/admin-login'
+    | '/login'
+    | '/register'
+    | '/_student/cart'
+    | '/_student/menu'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  StudentRoute: typeof StudentRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
@@ -76,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_student': {
+      id: '/_student'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof StudentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin-login': {
@@ -99,11 +139,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_student/cart': {
+      id: '/_student/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof StudentCartRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/_student/menu': {
+      id: '/_student/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof StudentMenuRouteImport
+      parentRoute: typeof StudentRoute
+    }
   }
 }
 
+interface StudentRouteChildren {
+  StudentCartRoute: typeof StudentCartRoute
+  StudentMenuRoute: typeof StudentMenuRoute
+}
+
+const StudentRouteChildren: StudentRouteChildren = {
+  StudentCartRoute: StudentCartRoute,
+  StudentMenuRoute: StudentMenuRoute,
+}
+
+const StudentRouteWithChildren =
+  StudentRoute._addFileChildren(StudentRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  StudentRoute: StudentRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,

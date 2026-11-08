@@ -1,13 +1,11 @@
-import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 
 import { BackButton, FoodImage, PageTitle } from "@/components/brand";
 import { Button } from "@/components/ui/button";
+import { useCartIssues } from "@/hooks/use-cart-issues";
 import { useCart } from "@/lib/cart";
 import { formatINR } from "@/lib/format";
-import { foodItemsQuery, isInStock } from "@/lib/menu";
 
 export const Route = createFileRoute("/_student/cart")({
   head: () => ({
@@ -20,25 +18,6 @@ export const Route = createFileRoute("/_student/cart")({
   }),
   component: CartPage,
 });
-
-export function useCartIssues() {
-  const cart = useCart();
-  const foods = useQuery(foodItemsQuery);
-  return useMemo(() => {
-    const live = new Map((foods.data ?? []).map((f) => [f.id, f]));
-    const issues = new Map<string, string>();
-    for (const l of cart.lines) {
-      const f = live.get(l.foodId);
-      if (!foods.data) continue;
-      if (!f) issues.set(l.foodId, "No longer on the menu");
-      else if (!isInStock(f)) issues.set(l.foodId, "Out of stock");
-      else if (l.quantity > f.stock) issues.set(l.foodId, `Only ${f.stock} left`);
-    }
-    // Live price takes precedence over cached price.
-    const total = cart.lines.reduce((s, l) => s + l.quantity * (live.get(l.foodId)?.price ?? l.price), 0);
-    return { issues, total, live, loading: foods.isLoading };
-  }, [cart.lines, foods.data, foods.isLoading]);
-}
 
 function CartPage() {
   const cart = useCart();
