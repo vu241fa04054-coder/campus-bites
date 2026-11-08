@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff, ImageOff } from "lucide-react";
 
@@ -134,7 +134,7 @@ export function FoodImage({ path, alt, className }: { path: string | null; alt: 
   return <img src={url} alt={alt} loading="lazy" className={cn("object-cover", className)} />;
 }
 
-export function PageTitle({ title, subtitle, children }: { title: string; subtitle?: string; children?: React.ReactNode }) {
+export function PageTitle({ title, subtitle, children }: { title: string; subtitle?: string; children?: ReactNode }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
       <div>
