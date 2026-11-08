@@ -129,7 +129,7 @@ function MenuPage() {
   );
 }
 
-function FoodCard({ item, category }: { item: FoodItem; category?: string }) {
+function FoodCard({ item, category }: { item: FoodItem; category?: string | undefined }) {
   const cart = useCart();
   const qty = cart.quantityOf(item.id);
   const inStock = isInStock(item);

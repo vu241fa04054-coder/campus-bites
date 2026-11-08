@@ -62,7 +62,7 @@ export function addDays(date: string, days: number): string {
 }
 
 function toSeconds(hhmm: string): number {
-  const [h, m] = hhmm.split(":").map(Number);
+  const [h = 0, m = 0] = hhmm.split(":").map(Number);
   return h * 3600 + m * 60;
 }
 
