@@ -10,33 +10,120 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudentRouteImport } from './routes/_student'
+import { Route as AdminLoginRouteImport } from './routes/admin-login'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as StudentCartRouteImport } from './routes/_student/cart'
+import { Route as StudentCheckoutRouteImport } from './routes/_student/checkout'
+import { Route as StudentMenuRouteImport } from './routes/_student/menu'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentRoute = StudentRouteImport.update({
+  id: '/_student',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin-login',
+  path: '/admin-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentCartRoute = StudentCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentCheckoutRoute = StudentCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => StudentRoute,
+} as any)
+const StudentMenuRoute = StudentMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => StudentRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin-login': typeof AdminLoginRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/cart': typeof StudentCartRoute
+  '/checkout': typeof StudentCheckoutRoute
+  '/menu': typeof StudentMenuRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin-login': typeof AdminLoginRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/cart': typeof StudentCartRoute
+  '/checkout': typeof StudentCheckoutRoute
+  '/menu': typeof StudentMenuRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_student': typeof StudentRouteWithChildren
+  '/admin-login': typeof AdminLoginRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/_student/cart': typeof StudentCartRoute
+  '/_student/checkout': typeof StudentCheckoutRoute
+  '/_student/menu': typeof StudentMenuRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin-login'
+    | '/login'
+    | '/register'
+    | '/cart'
+    | '/checkout'
+    | '/menu'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin-login'
+    | '/login'
+    | '/register'
+    | '/cart'
+    | '/checkout'
+    | '/menu'
+  id:
+    | '__root__'
+    | '/'
+    | '/_student'
+    | '/admin-login'
+    | '/login'
+    | '/register'
+    | '/_student/cart'
+    | '/_student/checkout'
+    | '/_student/menu'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  StudentRoute: typeof StudentRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +135,79 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_student': {
+      id: '/_student'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof StudentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-login': {
+      id: '/admin-login'
+      path: '/admin-login'
+      fullPath: '/admin-login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_student/cart': {
+      id: '/_student/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof StudentCartRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/_student/checkout': {
+      id: '/_student/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof StudentCheckoutRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/_student/menu': {
+      id: '/_student/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof StudentMenuRouteImport
+      parentRoute: typeof StudentRoute
+    }
   }
 }
 
+interface StudentRouteChildren {
+  StudentCartRoute: typeof StudentCartRoute
+  StudentCheckoutRoute: typeof StudentCheckoutRoute
+  StudentMenuRoute: typeof StudentMenuRoute
+}
+
+const StudentRouteChildren: StudentRouteChildren = {
+  StudentCartRoute: StudentCartRoute,
+  StudentCheckoutRoute: StudentCheckoutRoute,
+  StudentMenuRoute: StudentMenuRoute,
+}
+
+const StudentRouteWithChildren =
+  StudentRoute._addFileChildren(StudentRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  StudentRoute: StudentRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
